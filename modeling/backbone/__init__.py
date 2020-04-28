@@ -4,7 +4,7 @@
 # Author:		bqrmtao@qq.com
 # date:			2019/12/13
 
-from modeling.backbone.vgg import vgg_backbone
+from modeling.classification.vgg import vgg_backbone
 
 
 def build_backbone(backbone, **kwargs):
