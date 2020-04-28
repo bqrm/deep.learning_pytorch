@@ -12,6 +12,7 @@
         * inception_v3.py
         * inception_v4.py
         * lenet5.py
+        * res_next.py
     + detection:
         * yolo_v1.py
         * yolo_v2.py
