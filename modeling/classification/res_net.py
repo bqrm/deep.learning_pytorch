@@ -85,6 +85,7 @@ class BottleNeck(nn.Module):
             output += self.shortcut(x)
 
         output = self.relu(output)
+        
         return output
 
 
@@ -104,7 +105,7 @@ class ResNet(nn.Module):
         self.layer_2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer_3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer_4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512*block.expansion, num_class)
+        self.fc = nn.Linear(512*block.expansion, num_class)
 
     def _make_layer(self, block, out_channel, num_block, stride):
         shortcut = None
@@ -136,7 +137,7 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
-        x = self.linear(x)
+        x = self.fc(x)
 
         return x
 
