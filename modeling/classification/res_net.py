@@ -12,6 +12,9 @@ import torch.nn as nn
 
 
 class BasicBlock(nn.Module):
+    """
+    basic block
+    """
     expansion = 1
 
     def __init__(self, in_channel, out_channel, stride=1, shortcut=None, base_width=64):
@@ -45,6 +48,9 @@ class BasicBlock(nn.Module):
 
 
 class BottleNeck(nn.Module):
+    """
+    bottleneck
+    """
     expansion = 4
 
     def __init__(self, in_channel, out_channel, stride=1, shortcut=None, base_width=64):
