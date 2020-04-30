@@ -19,7 +19,7 @@ class BasicBlock(nn.Module):
 
         self.relu = nn.ReLU(inplace=True)
 
-        mid_channel = int(out_channel / (base_width / 64.))
+        mid_channel = int(out_channel * (base_width / 64.))
         self.conv_1 = nn.Conv2d(in_channel, mid_channel, 3, stride=stride, padding=1, bias=False)
         self.bn_1 = nn.BatchNorm2d(mid_channel)
         self.conv_2 = nn.Conv2d(mid_channel, mid_channel, 3, padding=1, bias=False)
