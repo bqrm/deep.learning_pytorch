@@ -57,8 +57,8 @@ class BottleNeck(nn.Module):
         self.bn_1 = nn.BatchNorm2d(mid_channel)
         self.conv_2 = nn.Conv2d(mid_channel, mid_channel, 3, stride=stride, padding=1, bias=False)
         self.bn_2 = nn.BatchNorm2d(mid_channel)
-        self.conv_3 = nn.Conv2d(mid_channel, self.expansion*out_channel, 1, bias=False)
-        self.bn_3 = nn.BatchNorm2d(self.expansion*out_channel)
+        self.conv_3 = nn.Conv2d(mid_channel, self.expansion * out_channel, 1, bias=False)
+        self.bn_3 = nn.BatchNorm2d(self.expansion * out_channel)
         self.shortcut = shortcut
 
     def forward(self, x):
