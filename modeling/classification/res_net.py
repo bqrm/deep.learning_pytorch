@@ -14,23 +14,17 @@ import torch.nn as nn
 class BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, in_channel, out_channel, stride=1):
+    def __init__(self, in_channel, out_channel, stride=1, shortcut=None, base_width=64):
         super(BasicBlock, self).__init__()
 
         self.relu = nn.ReLU(inplace=True)
 
-        self.conv_1 = nn.Conv2d(in_channel, out_channel, 3, stride=stride, padding=1, bias=False)
-        self.bn_1 = nn.BatchNorm2d(out_channel)
-        self.conv_2 = nn.Conv2d(out_channel, out_channel, 3, padding=1, bias=False)
+        mid_channel = int(out_channel / (base_width / 64.))
+        self.conv_1 = nn.Conv2d(in_channel, mid_channel, 3, stride=stride, padding=1, bias=False)
+        self.bn_1 = nn.BatchNorm2d(mid_channel)
+        self.conv_2 = nn.Conv2d(mid_channel, mid_channel, 3, padding=1, bias=False)
         self.bn_2 = nn.BatchNorm2d(out_channel)
-
-        if stride != 1 or in_channel != self.expansion*out_channel:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channel, self.expansion*out_channel, 1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion*out_channel),
-            )
-        else:
-            self.shortcut = None
+        self.shortcut = shortcut
 
     def forward(self, x):
         output = self.conv_1(x)
@@ -105,14 +99,14 @@ class ResNet(nn.Module):
         self.layer_2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer_3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer_4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.fc = nn.Linear(512*block.expansion, num_class)
+        self.fc = nn.Linear(512 * block.expansion, num_class)
 
     def _make_layer(self, block, out_channel, num_block, stride):
         shortcut = None
-        if stride != 1 or self.in_channel != block.expansion*out_channel:
+        if stride != 1 or self.in_channel != block.expansion * out_channel:
             shortcut = nn.Sequential(
-                nn.Conv2d(self.in_channel, block.expansion*out_channel, 1, stride=stride, bias=False),
-                nn.BatchNorm2d(block.expansion*out_channel),
+                nn.Conv2d(self.in_channel, block.expansion * out_channel, 1, stride=stride, bias=False),
+                nn.BatchNorm2d(block.expansion * out_channel),
             )
 
         layers = list()
