@@ -8,11 +8,30 @@ import logging
 import os
 import time
 
-if not os.path.exists("logs"):
-    os.mkdir("logs")
+from utils.root_path import root_path
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s.%(msecs)03d %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S',
-                    filename=time.strftime('logs\%Y-%m-%d', time.localtime(time.time())) + '.log',
-                    filemode='a')
+
+def set_logger():
+    log_path = os.path.join(root_path, "logs")
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+
+    logger.setLevel(logging.DEBUG)
+
+    file_handler = logging.FileHandler(time.strftime("{}\%Y-%m-%d.log".format(log_path), time.localtime(time.time())))
+    msg_formatter = logging.Formatter("%(asctime)s\t%(levelname)s\t%(message)s")
+    file_handler.setFormatter(msg_formatter)
+    logger.addHandler(file_handler)
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(logging.Formatter("%(message)s"))
+    stream_handler.setLevel(logging.INFO)
+    logger.addHandler(stream_handler)
+
+logger = logging.getLogger()
+set_logger()
+
+
+if "__main__" == __name__:
+    logger.info("aaaaaa")
+    logger.debug("bbbbbbbb")

@@ -4,11 +4,24 @@
 # Author:		bqrmtao@qq.com
 # date:			2019/12/17
 
-
+import base64
 import cv2
 import numpy
 
 from PIL import Image
+
+
+def base64_to_image(base64_code):
+    """
+    convert base6 to rgb
+    :param base64_code:
+    :return:
+    """
+    img_data = base64.b64decode(base64_code)
+    img_array = numpy.fromstring(img_data, numpy.uint8)
+    img_rgb = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+
+    return img_rgb
 
 
 def read_cv(image_name, convert_gray=False, reorder_rgb=True):
@@ -49,7 +62,6 @@ def read_pil(image_name, convert_gray=False):
         return numpy.array(Image.open(image_name).convert("L"), "uint8")
     else:
         return numpy.array(Image.open(image_name))
-
 
 
 

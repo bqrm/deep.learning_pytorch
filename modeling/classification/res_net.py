@@ -90,7 +90,7 @@ class BottleNeck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_class=10):
+    def __init__(self, block, num_blocks, num_class=1000):
         super(ResNet, self).__init__()
 
         self.in_channel = 64

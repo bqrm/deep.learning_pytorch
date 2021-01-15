@@ -31,22 +31,48 @@ def delete_recursively(input_path):
         os.remove(input_path)
 
 
-def get_filename_iteratively(in_path, extension_filter="*", sub_filename=None):
+def get_filename_iteratively(in_path, list_image_path, extension_filter=None, extension_ignore=None, sub_filename=None):
     """
     get file names iteratively
     :param in_path:
+    :param list_image_path:
     :param extension_filter:
+    :param extension_ignore:
     :param sub_filename:
     :return:
     """
-    list_image_paths = []
+
     for (path, dirs, files) in os.walk(in_path):
         if len(dirs) > 0:
             for sub_folder in dirs:
-                get_filename_iteratively(os.path.join(path, sub_folder), extension_filter)
+                get_filename_iteratively(os.path.join(path, sub_folder), list_image_path, extension_filter)
         for filename in files:
-            # extension_name = filename.split(".")[1]
-            if ("*" == extension_filter or filename.split(".")[1] in extension_filter) and (sub_filename is None or sub_filename in filename):
-                list_image_paths.append(os.path.join(path, filename))
+            ext_name = filename.split('.')[-1]
+            if extension_ignore is not None and ext_name in extension_ignore:
+                continue
+            elif (extension_filter is None or ext_name in extension_filter) and (sub_filename is None or sub_filename in filename):
+                list_image_path.append(os.path.join(path, filename))
 
-    return list_image_paths
+    return None
+
+
+def get_leaf_folder(root_path, list_leaf_folder):
+    """
+    get path of leaf folder
+    :param root_path:
+    :param list_leaf_folder:
+    :return:
+    """
+    for (path, dirs, files) in os.walk(root_path):
+        if len(dirs) == 0:
+            list_leaf_folder.append(path)
+
+    return None
+
+
+
+
+
+
+
+
