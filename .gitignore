@@ -1,7 +1,10 @@
 .idea
 .vscode
 
-references
+checkpoint
+init_weights
+logs
+reference
 tutorial
 
 todo.txt

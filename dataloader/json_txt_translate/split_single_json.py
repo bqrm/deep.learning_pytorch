@@ -14,14 +14,14 @@ import os
 
 from collections import defaultdict
 
-dst_path = r"/home/taomingyang/dataset/coco/annotations/train2014"
+dst_path = r"/home/taomingyang/dataset/coco/annotations/val2014"
 os.makedirs(dst_path, exist_ok=True)
 
-src_filename = r"/home/taomingyang/dataset/coco/annotations/instances_train2014.json"
+src_filename = r"/home/taomingyang/dataset/coco/annotations/instances_val2014.json"
 with open(src_filename, 'r') as f:
     coco_data = json.load(f)
 
-image_path = r"/home/taomingyang/dataset/coco/images/train2014"
+image_path = r"/home/taomingyang/dataset/coco/images/val2014"
 
 categories = {}
 for cate_info in coco_data["categories"]:
@@ -57,6 +57,7 @@ for annotation_key in annotation_dict:
         "shapes": [],
         "imagePath": image_info["file_name"],
         "imageData": None,
+        # "imageData": str_image_base64,
         "imageHeight": image_info["height"],
         "imageWidth": image_info["width"],
     }

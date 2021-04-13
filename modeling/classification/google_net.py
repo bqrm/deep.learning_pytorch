@@ -16,9 +16,9 @@ from tqdm import tqdm
 
 from dataloader import make_data_loader
 from modeling import conv_relu
+from modeling.utils.evaluator import Evaluator
+from modeling.utils.model_saver import ModelSaver
 from utils.dict_object import DictToObject
-from utils.evaluator import Evaluator
-from utils.model_saver import ModelSaver
 
 
 class BottleNeck(torch.nn.Module):

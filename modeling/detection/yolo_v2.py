@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# !/usr/bin/env python
+# -*- encoding: utf-8 -*-
 # Version:		python 3.6.5
 # Description:	
 # Author:		bqrmtao@qq.com

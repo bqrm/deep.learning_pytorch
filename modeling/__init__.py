@@ -22,3 +22,40 @@ def conv_relu(in_channel, out_channel, kernel, stride=1, padding=0, bn=True):
 
     return layer
 
+
+class BaseModel(object):
+    """
+    implements a yolo
+    """
+    def __init__(self, **kwargs):
+        self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        self.model = None
+        self.optimizer = None
+        self.lr_scheduler = None
+
+    def dump_parameters(self, pretrained_weights, **kwargs):
+        """
+        dump parameters to local file
+        """
+        raise NotImplementedError()
+
+    def evaluate(self, dataset_path, batch_size, **kwargs):
+        """
+        evaluate in 
+        """
+        raise NotImplementedError()
+
+    def load_parameters(self, pretrained_weights):
+        """
+        load parameters from local file
+        """
+        raise NotImplementedError()
+
+    def predict(self):
+        """
+        predict with trained model
+        """
+        raise NotImplementedError()
+
+    def train(self, dataset_path, num_epoch, batch_size, **kwargs):
+        raise NotImplementedError()

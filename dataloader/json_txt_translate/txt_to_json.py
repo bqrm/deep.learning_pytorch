@@ -1,5 +1,17 @@
-import base64
+# !/usr/bin/env python
+# -*- encoding: utf-8 -*-
+# Version:      python 3.6
+# Description:  
+# Author:       bqrmtao@qq.com
+# date:         2021/03/31 23:20
+
+from __future__ import absolute_import
+
 import os
+import sys
+sys.path.append(os.getcwd())
+
+import base64
 import json
 
 from PIL import Image
