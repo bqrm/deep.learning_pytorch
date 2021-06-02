@@ -70,6 +70,17 @@ def get_leaf_folder(root_path, list_leaf_folder):
     return None
 
 
+def kmgt(byte, unit='g'):
+    if 'g' == unit.lower():
+        return byte // 1073741824
+    elif 'm' == unit.lower():
+        return byte // 1048576
+    elif 'k' == unit.lower():
+        return byte // 1024
+    elif 't' == unit.lower():
+        return byte // 1099511627776
+    else:
+        raise ValueError("undefined unit {}".format(unit))
 
 
 

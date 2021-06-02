@@ -9,10 +9,10 @@
 from __future__ import absolute_import
 
 import os
-import sys
-sys.path.append(os.getcwd())
+# import sys
+# sys.path.append(os.getcwd())
 
-import fcntl
+# import fcntl
 import logging
 import logging.handlers
 import random
@@ -29,8 +29,8 @@ class TimedRotatingFileHandlerSafe(logging.handlers.TimedRotatingFileHandler):
         super(TimedRotatingFileHandlerSafe, self).__init__(filename, when=when, backupCount=backupCount, **kwargs)
 
     def _open(self):
-        if getattr(self, '_lockf', None) and not self._lockf.closed:
-            return logging.handlers.TimedRotatingFileHandler._open(self)
+        # if getattr(self, '_lockf', None) and not self._lockf.closed:
+        #     return logging.handlers.TimedRotatingFileHandler._open(self)
         with _lock:
             while True:
                 try:
@@ -49,11 +49,11 @@ class TimedRotatingFileHandlerSafe(logging.handlers.TimedRotatingFileHandler):
             # name = './{}_rotating_lock'.format(os.path.basename(self.baseFilename))
             # self._lockf = open(name, 'a')
             pass
-        fcntl.flock(self._lockf, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        # fcntl.flock(self._lockf, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
     def _release_lock(self):
         if not self._lockf.closed:
-            fcntl.lockf(self._lockf, fcntl.LOCK_UN)
+            # fcntl.lockf(self._lockf, fcntl.LOCK_UN)
             self._lockf.close()
 
     def is_same_file(self, file1, file2):
@@ -140,13 +140,13 @@ def logger_config():
     
     log_file_path = time.strftime("{}/%m%d.log".format(log_path), time.localtime(time.time()))
     log_handler = TimedRotatingFileHandlerSafe(log_file_path, when='MIDNIGHT')
-    log_handler.setLevel(logging.DEBUG)
+    log_handler.setLevel(logging.INFO)
     log_handler.setFormatter(logging.Formatter("%(asctime)s\t%(levelname)s\t%(pathname)s -> %(funcName)s\t%(message)s"))
     logger.addHandler(log_handler)
     
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(logging.Formatter("%(asctime)s\t%(pathname)s -> %(funcName)s\t: %(message)s"))
-    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setLevel(logging.INFO)
     logger.addHandler(stream_handler)
     
     # ERR_FILE = './logs/error.log'
