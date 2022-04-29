@@ -19,13 +19,13 @@ import shutil
 from utils.common_method import get_filename_iteratively
 
 
-dst_image_path = r"./dataset/coco_car_cat/val/image"
-dst_annotation_path = r"./dataset/coco_car_cat/val/annotation"
+dst_image_path = r"D:/Project/DataSet/coco_car_or_cat/train/image"
+dst_annotation_path = r"D:/Project/DataSet/coco_car_or_cat/train/annotation"
 os.makedirs(dst_image_path, exist_ok=True)
 os.makedirs(dst_annotation_path, exist_ok=True)
 
-src_image_path = r"./dataset/coco_1/val/image"
-src_annotation_path = r"./dataset/coco_1/val/annotation"
+src_image_path = r"D:/Project/DataSet/coco/train/image"
+src_annotation_path = r"D:/Project/DataSet/coco/train/annotation"
 
 list_image_filename = []
 list_annotation_filename = []
@@ -55,6 +55,8 @@ for annotation_file_idx, annotation_file_path in enumerate(list_annotation_filen
     while len(coco_data["shapes"]) > info_idx:
         if coco_data["shapes"][info_idx]["label"] not in ["cat", "car"]:
             coco_data["shapes"].remove(coco_data["shapes"][info_idx])
+            # info_idx = 0
+            # break
         else:
             info_idx += 1
 

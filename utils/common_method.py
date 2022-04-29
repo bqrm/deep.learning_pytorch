@@ -31,11 +31,11 @@ def delete_recursively(input_path):
         os.remove(input_path)
 
 
-def get_filename_iteratively(in_path, list_image_path, extension_filter=None, extension_ignore=None, sub_filename=None):
+def get_filename_iteratively(in_path, list_file_path, extension_filter=None, extension_ignore=None, sub_filename=None):
     """
     get file names iteratively
     :param in_path:
-    :param list_image_path:
+    :param list_file_path:
     :param extension_filter:
     :param extension_ignore:
     :param sub_filename:
@@ -45,13 +45,15 @@ def get_filename_iteratively(in_path, list_image_path, extension_filter=None, ex
     for (path, dirs, files) in os.walk(in_path):
         if len(dirs) > 0:
             for sub_folder in dirs:
-                get_filename_iteratively(os.path.join(path, sub_folder), list_image_path, extension_filter)
+                get_filename_iteratively(os.path.join(path, sub_folder), list_file_path, extension_filter, extension_ignore, sub_filename)
         for filename in files:
             ext_name = filename.split('.')[-1]
             if extension_ignore is not None and ext_name in extension_ignore:
                 continue
             elif (extension_filter is None or ext_name in extension_filter) and (sub_filename is None or sub_filename in filename):
-                list_image_path.append(os.path.join(path, filename))
+                full_name = os.path.join(path, filename)
+                if full_name not in list_file_path:
+                    list_file_path.append(full_name)
 
     return None
 
@@ -83,6 +85,14 @@ def kmgt(byte, unit='g'):
         raise ValueError("undefined unit {}".format(unit))
 
 
+def str_scientific_to_number(str_number: str):
+    e_pos = str_number.find('e')
+    if e_pos >= 0:
+        value_part = str_number[:e_pos]
+        index_part = str_number[e_pos+1:]
+        return str(float(value_part) * pow(10, int(index_part)))
+    else:
+        return str_number
 
 
 

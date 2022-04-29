@@ -189,7 +189,24 @@ class DarkNet(nn.Module):
         """
 
         hyperparams = module_defs.pop(0)
-        output_filters = [int(hyperparams["channels"])]
+        hyperparams.update({
+            'batch': int(hyperparams['batch']),
+            'subdivisions': int(hyperparams['subdivisions']),
+            'width': int(hyperparams['width']),
+            'height': int(hyperparams['height']),
+            'channels': int(hyperparams['channels']),
+            'optimizer': hyperparams.get('optimizer'),
+            'momentum': float(hyperparams['momentum']),
+            'decay': float(hyperparams['decay']),
+            'learning_rate': float(hyperparams['learning_rate']),
+            'burn_in': int(hyperparams['burn_in']),
+            'max_batches': int(hyperparams['max_batches']),
+            'policy': hyperparams['policy'],
+            'lr_steps': list(zip(map(int,   hyperparams["steps"].split(",")),
+                                 map(float, hyperparams["scales"].split(","))))
+        })
+        output_filters = [hyperparams["channels"]]
+
         module_list = nn.ModuleList()
 
         for module_i, module_def in enumerate(module_defs):
@@ -286,8 +303,13 @@ class DarkNet(nn.Module):
 
         # Establish cutoff for loading backbone weights
         cutoff = None
-        if "darknet53.conv.74" in weights_path:
-            cutoff = 75
+        # If the weights file has a cutoff, we can find out about it by looking at the filename
+        # examples: darknet53.conv.74 -> cutoff is 74
+        if ".conv." in weights_path:
+            try:
+                cutoff = int(weights_path.split(".")[-1])  # use last part of filename
+            except ValueError:
+                pass
 
         ptr = 0
         for i, (module_def, module) in enumerate(zip(self.module_defs, self.module_list)):
