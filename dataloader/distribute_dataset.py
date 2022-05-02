@@ -38,13 +38,13 @@ def distribute_dataset(image_path, segmentation_path, distribute_ratio=[0.6, 0.2
     train_index = file_index[:num_cum_sum[0]]
     test_index = file_index[num_cum_sum[0]:num_cum_sum[1]]
     if len(distribute_ratio) > 2:
-        val_index = file_index[num_cum_sum[1]:]
+        valid_index = file_index[num_cum_sum[1]:]
     else:
-        val_index = []
+        valid_index = []
 
     train_split_name = os.path.join(segmentation_path, "train.txt")
     test_split_name = os.path.join(segmentation_path, "test.txt")
-    val_split_name = os.path.join(segmentation_path, "val.txt")
+    valid_split_name = os.path.join(segmentation_path, "valid.txt")
 
     for image_index, image_name in enumerate(list_filename):
         if 0 == image_index % 1000:
@@ -57,8 +57,8 @@ def distribute_dataset(image_path, segmentation_path, distribute_ratio=[0.6, 0.2
         if image_index in test_index:
             with open(test_split_name, "a") as f:
                 f.write(str(base_name) + "\n")
-        if image_index in val_index:
-            with open(val_split_name, "a") as f:
+        if image_index in valid_index:
+            with open(valid_split_name, "a") as f:
                 f.write(str(base_name) + "\n")
 
     print("done")

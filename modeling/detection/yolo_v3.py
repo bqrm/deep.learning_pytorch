@@ -87,7 +87,7 @@ class YoloV3(ObjDetModel):
         self.model = DarkNet(config_path=kwargs["model_def"]).to(self.device)
 
         # pretrained weights
-        if "pretrained_weights" in kwargs:
+        if "pretrained_weights" in kwargs and kwargs["pretrained_weights"]:
             if kwargs["pretrained_weights"].endswith(".pth"):
                 if os.path.exists(kwargs["pretrained_weights"]):
                     self.model.load_state_dict(torch.load(kwargs["pretrained_weights"], map_location="cpu"))
@@ -279,7 +279,7 @@ class YoloV3(ObjDetModel):
 
             log_str += AsciiTable(metric_table).table
             log_str += "\nTotal loss {}".format(loss.item())
-            logger.info(log_str)
+            # logger.info(log_str)
 
             # if lr_scheduler is not None:
             #     lr_scheduler.step()
@@ -318,24 +318,24 @@ class YoloV3(ObjDetModel):
 
         print("prepare dataset")
         if os.path.isdir(os.path.join(dataset_path, "image")):
-            print("split train/val subsets...")
-            logger.info("split train/val subsets...")
+            print("split train/valid subsets...")
+            logger.info("split train/valid subsets...")
             split_dataset(dataset_path)
         elif os.path.isdir(os.path.join(dataset_path, "train")):
-            if not os.path.exists(os.path.join(dataset_path, "val")):
+            if not os.path.exists(os.path.join(dataset_path, "valid")):
                 fetch_from_train_set(dataset_path)
-                logger.info("fetch val from train")
+                logger.info("fetch valid from train")
         else:
             print("unsupported dataset format!")
             logger.info("unsupported dataset format!")
             return None
 
-        image_val = os.path.join(dataset_path, "val", "image")
-        annotation_val = os.path.join(dataset_path, "val", "annotation")
+        image_valid = os.path.join(dataset_path, "valid", "image")
+        annotation_valid = os.path.join(dataset_path, "valid", "annotation")
 
         dataset_valid = YoloDataset(
-            image_val,
-            annotation_val,
+            image_valid,
+            annotation_valid,
             is_single_json_file=False,
             filter_classes=self.filter_classes,
             is_train=False,
@@ -369,23 +369,23 @@ class YoloV3(ObjDetModel):
         # logger.info("root_path: {}".format(dataset_path))
 
         logger.info("prepare dataset")
-        if os.path.isdir(os.path.join(dataset_path, "train")) and os.path.isdir(os.path.join(dataset_path, "val")):
+        if os.path.isdir(os.path.join(dataset_path, "train")) and os.path.isdir(os.path.join(dataset_path, "valid")):
             logger.info("train and validate set exist")      
         elif os.path.isdir(os.path.join(dataset_path, "train")):
-            if not os.path.exists(os.path.join(dataset_path, "val")):
-                logger.info("fetch val from train")
+            if not os.path.exists(os.path.join(dataset_path, "valid")):
+                logger.info("fetch valid from train")
                 fetch_from_train_set(dataset_path)
         elif os.path.isdir(os.path.join(dataset_path, "image")):
-            logger.info("split train/val subsets...")
+            logger.info("split train/valid subsets...")
             split_dataset(dataset_path)    
         else:
             logger.info("unsupported dataset format!")
             return None
 
         image_train = os.path.join(dataset_path, "train", "image")
-        image_val = os.path.join(dataset_path, "val", "image")
+        image_valid = os.path.join(dataset_path, "valid", "image")
         annotation_train = os.path.join(dataset_path, "train", "annotation")
-        annotation_val = os.path.join(dataset_path, "val", "annotation")
+        annotation_valid = os.path.join(dataset_path, "valid", "annotation")
 
         # Get dataloader
         dataset_train = YoloDataset(
@@ -399,8 +399,8 @@ class YoloV3(ObjDetModel):
         )
         # Get dataloader
         dataset_valid = YoloDataset(
-            image_val,
-            annotation_val,
+            image_valid,
+            annotation_valid,
             is_single_json_file=False,
             filter_classes=self.filter_classes,
             is_train=False,
@@ -428,7 +428,7 @@ class YoloV3(ObjDetModel):
         torch.manual_seed(1)
         ckpt_thresh = num_epoch // 3 * 2
 
-        for epoch_idx in range(num_epoch):
+        for epoch_idx in range(1, num_epoch+1):
             # train for one epoch, printing every 10 iterations
             loss_value = self._train_one_epoch(optimizer, data_loader_train, epoch_idx, **kwargs)
 
@@ -451,18 +451,6 @@ class YoloV3(ObjDetModel):
                     logger.info("\t+ Class \"{}\" ({}) - AP: {:.5f}".format(c, dataset_valid.coco.cats[dataset_valid.label_to_cat[c]]["name"], AP[i]))
             
                 logger.info("mAP: {:.9f}".format(AP.mean()))
-        
-        if num_epoch > kwargs["ckpt_interval"] and 1 !=epoch_idx % kwargs["ckpt_interval"]:
-            self.dump_parameter(epoch_idx, model_file_path=self.ckpt_path)
-        
-            logger.info("evaluate after all epoch(s)")
-            precision, recall, AP, f1, ap_class = self._evaluate(data_loader_valid, **kwargs)
-        
-            logger.info("Average Precisions:")
-            for i, c in enumerate(ap_class):
-                logger.info("\t+ Class \"{}\" ({}) - AP: {:.5f}".format(c, dataset_valid.coco.cats[dataset_valid.label_to_cat[c]]["name"], AP[i]))
-        
-            logger.info("mAP: {:.9f}".format(AP.mean()))
 
 
 if __name__ == "__main__":
@@ -497,7 +485,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--pretrained_weights",
         type=str,
-        default="./init_weights/darknet/darknet53.conv.74",
+        # default="./init_weights/darknet/darknet53.conv.74",
     )
     parser.add_argument(
         "--lr",
@@ -533,6 +521,11 @@ if __name__ == "__main__":
         "--result_path",
         type=str,
         default="./result/detection/yolo_v3/",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default="-1",
     )
 
     args = parser.parse_args()

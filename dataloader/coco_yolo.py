@@ -28,12 +28,12 @@ from modeling.backbone.darknet.utils import resize
 
 def fetch_from_train_set(root_path, split_ratio=0.8):
     image_train_folder = os.path.join(root_path, "train", "image")
-    image_val_folder = os.path.join(root_path, "val", "image")
+    image_valid_folder = os.path.join(root_path, "valid", "image")
     annotation_train_folder = os.path.join(root_path, "train", "annotation")
-    annotation_val_folder = os.path.join(root_path, "val", "annotation")
+    annotation_valid_folder = os.path.join(root_path, "valid", "annotation")
 
-    os.makedirs(image_val_folder, exist_ok=True)
-    os.makedirs(annotation_val_folder, exist_ok=True)
+    os.makedirs(image_valid_folder, exist_ok=True)
+    os.makedirs(annotation_valid_folder, exist_ok=True)
 
     list_image = list(sorted(os.listdir(image_train_folder)))
     list_annotation = list(sorted(os.listdir(annotation_train_folder)))
@@ -46,15 +46,15 @@ def fetch_from_train_set(root_path, split_ratio=0.8):
             union_list.append(image_name)
 
     disordered_index = np.random.permutation(range(len(union_list)))
-    val_list = disordered_index[np.int(len(union_list) * split_ratio):]
+    valid_list = disordered_index[np.int(len(union_list) * split_ratio):]
     import shutil
 
-    for image_idx in val_list:
+    for image_idx in valid_list:
         image_name = union_list[image_idx]
         annotation_name = os.path.splitext(image_name)[0] + ".json"
 
-        shutil.move(os.path.join(image_train_folder, image_name), os.path.join(image_val_folder, image_name))
-        shutil.move(os.path.join(annotation_train_folder, annotation_name), os.path.join(annotation_val_folder, annotation_name))
+        shutil.move(os.path.join(image_train_folder, image_name), os.path.join(image_valid_folder, image_name))
+        shutil.move(os.path.join(annotation_train_folder, annotation_name), os.path.join(annotation_valid_folder, annotation_name))
 
 
 def split_dataset(root_path, split_ratio=0.8):
@@ -62,14 +62,14 @@ def split_dataset(root_path, split_ratio=0.8):
     annotation_path = os.path.join(root_path, "annotation")
 
     image_train_folder = os.path.join(root_path, "train", "image")
-    image_val_folder = os.path.join(root_path, "val", "image")
+    image_valid_folder = os.path.join(root_path, "valid", "image")
     annotation_train_folder = os.path.join(root_path, "train", "annotation")
-    annotation_val_folder = os.path.join(root_path, "val", "annotation")
+    annotation_valid_folder = os.path.join(root_path, "valid", "annotation")
 
     os.makedirs(image_train_folder, exist_ok=True)
-    os.makedirs(image_val_folder, exist_ok=True)
+    os.makedirs(image_valid_folder, exist_ok=True)
     os.makedirs(annotation_train_folder, exist_ok=True)
-    os.makedirs(annotation_val_folder, exist_ok=True)
+    os.makedirs(annotation_valid_folder, exist_ok=True)
 
     list_image = list(sorted(os.listdir(image_path)))
     list_annotation = list(sorted(os.listdir(annotation_path)))
@@ -83,7 +83,7 @@ def split_dataset(root_path, split_ratio=0.8):
     
     disordered_index = np.random.permutation(range(len(union_list)))
     train_list = disordered_index[:np.int(len(union_list) * split_ratio)]
-    val_list = disordered_index[np.int(len(union_list) * split_ratio):]
+    valid_list = disordered_index[np.int(len(union_list) * split_ratio):]
 
     import shutil
     for image_idx, image_name in enumerate(union_list):
@@ -93,8 +93,8 @@ def split_dataset(root_path, split_ratio=0.8):
             shutil.copy(os.path.join(image_path, image_name), os.path.join(image_train_folder, image_name))
             shutil.copy(os.path.join(annotation_path, annotation_name), os.path.join(annotation_train_folder, annotation_name))
         else:
-            shutil.copy(os.path.join(image_path, image_name), os.path.join(image_val_folder, image_name))
-            shutil.copy(os.path.join(annotation_path, annotation_name), os.path.join(annotation_val_folder, annotation_name))
+            shutil.copy(os.path.join(image_path, image_name), os.path.join(image_valid_folder, image_name))
+            shutil.copy(os.path.join(annotation_path, annotation_name), os.path.join(annotation_valid_folder, annotation_name))
 
 
 class YoloCoco(object):
@@ -432,7 +432,7 @@ class YoloDataset(torch.utils.data.Dataset):
             box_info.append(((x1, y1), (x2, y2)))
 
             # print(x1, x2, y1, y2, padded_h, padded_w)
-            # Returns (x, y, w, h)
+            # Returns (cx, cy, w, h)
             boxes[0, 2] = (x2 + x1) / 2 / padded_w
             boxes[0, 3] = (y2 + y1) / 2 / padded_h
             boxes[0, 4] = (x2 - x1) / padded_w

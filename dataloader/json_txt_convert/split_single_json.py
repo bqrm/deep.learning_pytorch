@@ -19,7 +19,7 @@ from collections import defaultdict
 
 from utils.logger import logger
 
-dst_path = r"D:/Project/DataSet/coco/val/annotation/"
+dst_path = r"D:/Project/DataSet/coco/valid/annotation/"
 os.makedirs(dst_path, exist_ok=True)
 
 src_filename = r"D:/Project/DataSet/coco/annotation/instances_val2014.json"
@@ -27,7 +27,7 @@ with open(src_filename, 'r') as f:
     coco_data = json.load(f)
 logger.info("{} image(s), {} annotation(s), {} categories loaded".format(len(coco_data["images"]), len(coco_data["annotations"]), len(coco_data["categories"])))
 
-image_path = r"D:/Project/DataSet/coco/val/image/"
+image_path = r"D:/Project/DataSet/coco/valid/image/"
 
 dict_category = {}
 for category_info in coco_data["categories"]:

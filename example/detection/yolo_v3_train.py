@@ -42,12 +42,12 @@ def main():
     parser.add_argument(
         "--model_def",
         type=str,
-        default="./modeling/backbone/darknet/yolov3_tiny.cfg",
+        default="./modeling/backbone/darknet/yolov3-tiny.cfg",
     )
     parser.add_argument(
         "--pretrained_weights",
         type=str,
-        default="./init_weights/darknet/darknet53.conv.74",
+        help="path to checkpoint file."
     )
     parser.add_argument(
         "--lr",
@@ -57,12 +57,12 @@ def main():
     parser.add_argument(
         "--conf_thresh",
         type=float,
-        default=0.4,
+        default=0.1,
     )
     parser.add_argument(
         "--nms_thresh",
         type=float,
-        default=0.4,
+        default=0.5,
     )
     parser.add_argument(
         "--gradient_accumulation",

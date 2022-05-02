@@ -63,7 +63,7 @@ class PascalVocSeg(data.Dataset):
             sample = None
             if "train" == split:
                 sample = self._transform_train(tmp)
-            elif "val" == split:
+            elif "valid" == split:
                 sample = self._transform_valid(tmp)
 
             if sample is None:

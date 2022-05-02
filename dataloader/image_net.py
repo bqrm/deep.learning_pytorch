@@ -67,7 +67,7 @@ class MiniImageNet(data.Dataset):
         for split in self._categories:
             if "train" == split:
                 _image = self._transform_train(_image)
-            elif split in ["val", "test"]:
+            elif split in ["valid", "test"]:
                 _image = self._transform_valid(_image)
 
             sample = {"image": _image, "label": self.image_labels[index], "id": self.image_ids[index]}
